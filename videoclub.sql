@@ -27,7 +27,8 @@ CREATE TABLE if not exists socios (
     fecha_nacimiento DATE NULL,
     telefono VARCHAR(12) null,
     direccion_id INT not null,
-    correo VARCHAR(100) nULL
+    correo VARCHAR(100) null,
+    num_carnet VARCHAR(10)
 );
 
 
@@ -107,6 +108,7 @@ socios(socio_id);
 
 ------------ SE CREA UN INDICE PARA NO PERMITIR REGISTROS DUPLICADOS DE SOCIOS---------------------------------
 create unique index index_idenfiticacion_socio on socios(lower(identificacion)); 
+create unique index index_num_carnet_socio on socios(num_carnet);
 
 ------------ SE CREA UN INDICE PARA NO PERMITIR REGISTROS DUPLICADOS DE DIRECCIONES ---------------------------------
 ALTER TABLE direcciones
@@ -676,6 +678,7 @@ select * from generos g ;
 
 ----------TABLA PELICULAS
 insert into peliculas (titulo, director_id, genero_id, sinopsis )
+
 select distinct tv.titulo,
 d.director_id,
 g.genero_id,
@@ -683,6 +686,9 @@ tv.sinopsis
 from tmp_videoclub tv
 left join generos g on g.nombre = tv.genero 
 left join directores d on d.nombre =tv.director ;
+
+select * from tmp_videoclub tv; 
+select * from generos g 
 
 select * from peliculas;
 
@@ -697,6 +703,8 @@ order by tv.id_copia ;
 
 select * from 	copias_pelicula cp;
 
+select *
+from peliculas p 
 
 ------TABLA DIRECCIONES
 INSERT INTO direcciones (calle, numero, piso, ext, codigo_postal)
@@ -751,21 +759,42 @@ select * from alquiler a ;
 -----------------------CONSULTA DE PELICULAS DISPONIBLES-----------------------------
 SELECT 
     p.pelicula_id, 
-    p.titulo, 
-    d.nombre AS director, 
-    g.nombre AS genero, 
+    p.titulo,  
     COUNT(cp.copia_id) AS copias_disponibles
 FROM 
     peliculas p
 JOIN 
     copias_pelicula cp ON p.pelicula_id = cp.pelicula_id
 LEFT JOIN 
-    alquiler a ON cp.copia_id = a.copia_id AND a.fecha_devolucion IS NULL 
-JOIN 
-    directores d ON p.director_id = d.director_id
-JOIN 
-    generos g ON p.genero_id = g.genero_id
+    alquiler a ON cp.copia_id = a.copia_id 
+    AND a.fecha_devolucion IS NULL 
 WHERE 
     a.copia_id IS NULL 
 GROUP BY 
-    p.pelicula_id, p.titulo, d.nombre, g.nombre;
+    p.pelicula_id, p.titulo
+order by p.pelicula_id;
+
+select count(cp.copia_id) as total from copias_pelicula cp 
+
+SELECT 
+    cp.copia_id, 
+    cp.pelicula_id,
+    a.socio_id,
+    a.fecha_alquiler,
+    a.fecha_devolucion 
+FROM 
+    copias_pelicula cp 
+LEFT JOIN 
+    alquiler a ON cp.copia_id = a.copia_id 
+AND a.fecha_devolucion IS NULL 
+order by cp.copia_id 
+
+select count(copia_id) 
+from copias_pelicula cp ;
+select count(alquiler_id) 
+from alquiler cp 
+where cp.fecha_devolucion is null;
+
+select * 
+from tmp_videoclub tv 
+    
