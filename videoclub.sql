@@ -63,7 +63,6 @@ CREATE TABLE if not exists peliculas (
 CREATE TABLE if not exists copias_pelicula (
     copia_id INT PRIMARY KEY,
     pelicula_id INT not NULL,
-    activa BOOLEAN
 );
 
 CREATE TABLE if not exists alquiler (
