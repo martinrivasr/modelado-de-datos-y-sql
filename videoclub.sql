@@ -62,7 +62,7 @@ CREATE TABLE if not exists peliculas (
 
 CREATE TABLE if not exists copias_pelicula (
     copia_id INT PRIMARY KEY,
-    pelicula_id INT not NULL,
+    pelicula_id INT not NULL
 );
 
 CREATE TABLE if not exists alquiler (
@@ -665,19 +665,16 @@ insert into directores (nombre)
 select distinct director 
 from tmp_videoclub tv;
 
-select * from directores d;
 
 --------- TABLA GENEROS
 insert  into generos (nombre)
 select distinct genero 
 from tmp_videoclub tv;
 
-select * from generos g ;
 
 
 ----------TABLA PELICULAS
 insert into peliculas (titulo, director_id, genero_id, sinopsis )
-
 select distinct tv.titulo,
 d.director_id,
 g.genero_id,
@@ -685,12 +682,6 @@ tv.sinopsis
 from tmp_videoclub tv
 left join generos g on g.nombre = tv.genero 
 left join directores d on d.nombre =tv.director ;
-
-select * from tmp_videoclub tv; 
-select * from generos g 
-
-select * from peliculas;
-
 
 -------TABLA COPIAS_PELICULAS
 insert into copias_pelicula (copia_id , pelicula_id)
@@ -700,10 +691,6 @@ from tmp_videoclub tv
 left join peliculas p on p.titulo = tv.titulo 
 order by tv.id_copia ;
 
-select * from 	copias_pelicula cp;
-
-select *
-from peliculas p 
 
 ------TABLA DIRECCIONES
 INSERT INTO direcciones (calle, numero, piso, ext, codigo_postal)
@@ -716,7 +703,6 @@ SELECT DISTINCT
 FROM tmp_videoclub tv
 ON CONFLICT (calle, numero, piso, ext, codigo_postal) DO NOTHING;
 
-select * from direcciones;
 
 
 -----TABLA SOCIOS 
@@ -737,7 +723,6 @@ JOIN direcciones d ON tv.calle = d.calle
                  AND tv.codigo_postal = d.codigo_postal
 WHERE d.direccion_id IS NOT NULL;
 
-select * from tmp_videoclub tv ;
 
 
 ------TABLA ALQUILER
@@ -751,23 +736,6 @@ FROM tmp_videoclub tv
 JOIN socios s ON tv.dni = s.identificacion  
 JOIN copias_pelicula cp ON tv.id_copia = cp.copia_id 
 order by  cp.copia_id;  
-
-
-INSERT INTO prestamos (socio_id, copia_id, fecha_alquiler, fecha_devolucion)
-
-SELECT DISTINCT
-    s.socio_id,
-    cp.copia_id,
-    tv.fecha_alquiler,
-    tv.fecha_devolucion
-FROM tmp_videoclub tv
-JOIN socios s ON tv.dni = s.identificacion  
-JOIN copias_pelicula cp ON tv.id_copia = cp.copia_id 
-order by  cp.copia_id;  
-
-
-
-select * from alquiler a ;
 
 
 -----------------------CONSULTA DE PELICULAS DISPONIBLES-----------------------------
@@ -788,27 +756,5 @@ GROUP BY
     p.pelicula_id, p.titulo
 order by p.pelicula_id;
 
-select count(cp.copia_id) as total from copias_pelicula cp 
 
-SELECT 
-    cp.copia_id, 
-    cp.pelicula_id,
-    a.socio_id,
-    a.fecha_alquiler,
-    a.fecha_devolucion 
-FROM 
-    copias_pelicula cp 
-LEFT JOIN 
-    alquiler a ON cp.copia_id = a.copia_id 
-AND a.fecha_devolucion IS NULL 
-order by cp.copia_id 
-
-select count(copia_id) 
-from copias_pelicula cp ;
-select count(alquiler_id) 
-from alquiler cp 
-where cp.fecha_devolucion is null;
-
-select * 
-from tmp_videoclub tv 
     
