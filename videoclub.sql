@@ -737,7 +737,7 @@ JOIN direcciones d ON tv.calle = d.calle
                  AND tv.codigo_postal = d.codigo_postal
 WHERE d.direccion_id IS NOT NULL;
 
-select * from socios s ;
+select * from tmp_videoclub tv ;
 
 
 ------TABLA ALQUILER
@@ -751,6 +751,21 @@ FROM tmp_videoclub tv
 JOIN socios s ON tv.dni = s.identificacion  
 JOIN copias_pelicula cp ON tv.id_copia = cp.copia_id 
 order by  cp.copia_id;  
+
+
+INSERT INTO prestamos (socio_id, copia_id, fecha_alquiler, fecha_devolucion)
+
+SELECT DISTINCT
+    s.socio_id,
+    cp.copia_id,
+    tv.fecha_alquiler,
+    tv.fecha_devolucion
+FROM tmp_videoclub tv
+JOIN socios s ON tv.dni = s.identificacion  
+JOIN copias_pelicula cp ON tv.id_copia = cp.copia_id 
+order by  cp.copia_id;  
+
+
 
 select * from alquiler a ;
 
